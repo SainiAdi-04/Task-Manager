@@ -7,68 +7,55 @@ const getTasks = async (req, res) => {
         if (status) {
             filter.status = status;
         }
-        let tasks;
 
-        if (req.user.role === "admin") {
-            tasks = await Task.find(filter).populate(
-                "assignedTo",
-                "name email profileImageUrl"
-            )
-        } else {
-            tasks = await Task.find({ ...filter, assignedTo: req.user._id }).populate(
-                "assignedTo",
-                "name email profileImageUrl"
-            )
-        }
+        const baseFilter = req.user.role === "admin" ? {} : { assignedTo: req.user._id };
 
-        //Add completed todochecklist count to each task
+        let tasks = await Task.find({ ...filter, ...baseFilter }).populate(
+            "assignedTo",
+            "name email profileImageUrl"
+        );
+
+        // Add completed todo count to each task
         tasks = await Promise.all(
             tasks.map(async (task) => {
                 const completedCount = task.todoChecklist.filter(
                     (item) => item.completed
-                ).length
-                return { ...task._doc, completedTodoCount: completedCount }
+                ).length;
+                return { ...task._doc, completedTodoCount: completedCount };
             })
         );
 
-        //Status summary counts
-        const allTasks = await Task.countDocuments(
-            req.user.role === "admin" ? {} : { assignedTo: req.user._id }
-        )
+        // Status summary counts
+        const allTasks = await Task.countDocuments(baseFilter);
 
         const pendingTasks = await Task.countDocuments({
-            ...filter,
+            ...baseFilter,
             status: "Pending",
-            ...(req.user.role !== "admin" && { assignedTo: req.user._id })
         });
 
         const inProgressTasks = await Task.countDocuments({
-            ...filter,
+            ...baseFilter,
             status: "In Progress",
-            ...(req.user.role !== "admin" && { assignedTo: req.user._id })
-        })
+        });
 
         const completedTasks = await Task.countDocuments({
-            ...filter,
+            ...baseFilter,
             status: "Completed",
-            ...(req.user.role !== "admin" && { assignedTo: req.user._id })
-
-        })
+        });
 
         res.json({
             tasks,
-            statusSummary:{
-                all:allTasks,
+            statusSummary: {
+                all: allTasks,
                 pendingTasks,
                 inProgressTasks,
-                completedTasks
-            }
-        })
-
+                completedTasks,
+            },
+        });
     } catch (err) {
-        res.status(500).json({ message: "server error", error: err.message })
+        res.status(500).json({ message: "server error", error: err.message });
     }
-}
+};
 
 
 
@@ -363,7 +350,7 @@ const getUserDashboardData = async (req, res) => {
 
         const taskPriorityLevels=taskPriorities.reduce((acc,priority)=>{
             acc[priority]=
-            taskPriorityLevelsRaw.find((item)=>item._id)?.count||0;
+            taskPriorityLevelsRaw.find((item)=>item._id===priority)?.count||0;
             return acc
         },{})
 

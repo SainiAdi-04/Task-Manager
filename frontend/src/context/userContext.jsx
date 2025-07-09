@@ -11,7 +11,7 @@ const UserProvider = ({children}) => {
     useEffect(() => {
         if(user) return;
 
-        const accessToken = localStorage.getItem("Token");
+        const accessToken = localStorage.getItem("token");
         if(!accessToken){
             setLoading(false);
             return;
@@ -39,7 +39,7 @@ const UserProvider = ({children}) => {
 
     const clearUser=()=>{
         setUser(null);
-        localStorage.removeItem("Token");
+        localStorage.removeItem("token");
     }
 
     return (

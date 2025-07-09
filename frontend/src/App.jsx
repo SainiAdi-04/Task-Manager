@@ -31,7 +31,7 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/signUp" element={<SignUp/>}/>
 
-                    //admin paths
+
                     <Route element={<PrivateRoute allowedRoles={["admin"]}/>}>
                         <Route path="/admin/dashboard" element={<Dashboard/>}/>
                         <Route path="/admin/tasks" element={<ManageTasks />}/>
@@ -39,7 +39,7 @@ const App = () => {
                         <Route path="/admin/users" element={<ManageUsers />}/>
                     </Route>
 
-                    //user paths
+
                     <Route element={<PrivateRoute allowedRoles={["admin"]}/>}>
                         <Route path="/user/dashboard" element={<UserDashboard/>}/>
                         <Route path="/user/my-tasks" element={<MyTasks />}/>
