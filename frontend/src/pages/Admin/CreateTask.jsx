@@ -113,7 +113,6 @@ const CreateTask = () => {
         }
     };
 
-
     const handleSubmit = async () => {
         setError(null);
 
@@ -143,7 +142,6 @@ const CreateTask = () => {
         }
         createTask();
     }
-
 
     //get task info by id
     const getTaskDetailsByID = async () => {
