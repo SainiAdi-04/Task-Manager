@@ -159,7 +159,7 @@ const Dashboard = () => {
                             <h5 className="text-lg">Recent Tasks</h5>
 
                             <button className="card-btn" onClick={onSeeMore}>
-                                See All <LuArrowRight classname="text-base"/>
+                                See All <LuArrowRight className="text-base"/>
                             </button>
                         </div>
 
