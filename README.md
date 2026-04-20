@@ -57,6 +57,3 @@ An end-to-end task manager app with an admin dashboard, built using the MERN sta
    npm install
    npm run dev
    ```
-
-## License
-ISC
