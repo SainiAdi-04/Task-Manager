@@ -9,7 +9,7 @@ router.post("/login", loginUser); //Login User
 router.get("/profile", protect, getUserProfile); //Get User Profile
 router.put("/profile", protect, updateUserProfile); //Update Profile
 
-router.post("/upload-image", upload.single("image"),(req,res)=>{
+router.post("/upload-image", protect, upload.single("image"),(req,res)=>{
     if(!req.file){
         return res.status(400).json({meassge:"No file uploaded"});
     }

@@ -68,6 +68,16 @@ const getTaskById = async (req, res) => {
         )
 
         if(!task) return res.status(404).json({message:"Task not found"})
+
+        const isAdmin = req.user.role === "admin";
+        const isAssigned = task.assignedTo.some(
+            (user) => user._id.toString() === req.user._id.toString()
+        );
+
+        if (!isAdmin && !isAssigned) {
+            return res.status(403).json({ message: "Not authorized to view this task" });
+        }
+
         res.json(task)
     } catch (err) {
         res.status(500).json({ message: "server error", error: err.message })
@@ -117,6 +127,15 @@ const updateTask = async (req, res) => {
         const task=await Task.findById(req.params.id);
 
         if(!task) return res.status(404).json({messagge:"Task not found"})
+
+        const isAdmin = req.user.role === "admin";
+        const isAssigned = task.assignedTo.some(
+            (userId) => userId.toString() === req.user._id.toString()
+        );
+
+        if (!isAdmin && !isAssigned) {
+            return res.status(403).json({ message: "Not authorized to update this task" });
+        }
 
         task.title=req.body.title||task.title
         task.description=req.body.description||task.description;
